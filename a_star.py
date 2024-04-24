@@ -3,7 +3,7 @@ from common import is_valid
 
 def count_filled_3x3_blocks(tabuleiro):
     """
-    Retorna a quantidaed de blocos 3x3 preenchidos no tabuleiro (máximo 9)
+    Retorna a quantidaed de blocos 3x3 preenchidos no tabuleiro.
     """
     blocos_preenchidos = 0
     for bloco_linha in range(0, 9, 3):
@@ -19,7 +19,7 @@ def count_filled_3x3_blocks(tabuleiro):
 
 def count_filled_columns(tabuleiro):
     """
-    Retorna a quantidade de colunas preenchidas no tabuleiro (máximo 9)
+    Retorna a quantidade de colunas preenchidas no tabuleiro.
     """    
     colunas_preenchidas = 0
     for coluna in range(9):
@@ -30,7 +30,7 @@ def count_filled_columns(tabuleiro):
 
 def count_filled_rows(tabuleiro):
     """
-    Retorna a quantidade de linhas preenchidas no tabuleiro (máximo 9)
+    Retorna a quantidade de linhas preenchidas no tabuleiro.
     """    
     linhas_preenchidas = 0
     for linha in tabuleiro:
@@ -42,18 +42,19 @@ def count_filled_rows(tabuleiro):
 def count_filled_segments(board):
     """
     Retorna a quantidade de segmentos (linhas + colunas + blocos) preenchidos 
-    no tabuleiro (máximo 27)
+    no tabuleiro. O resultado é multiplicado por -1 pois o heap prioriza o 
+    menor elemento, mas o objetivo é maximizar.
     """    
     rows = count_filled_rows(board)
     cols = count_filled_columns(board)
     blocks = count_filled_3x3_blocks(board)
     
-    return (rows + cols + blocks)
+    return -1 * (rows + cols + blocks)
 
 
 def find_best_cell(board):
     """
-    Encontra a célula que maximiza a heurística usada
+    Encontra a célula que maximiza a heurística.
     """    
     max_filled_segments = 0
     best_cell = None
@@ -63,7 +64,7 @@ def find_best_cell(board):
             if board[i][j] == 0:
                 new_board = [row[:] for row in board]
                 new_board[i][j] = 10 # Valor auxiliar
-                filled_segments = count_filled_segments(new_board)
+                filled_segments = count_filled_segments(new_board) * -1
                 if filled_segments >= max_filled_segments:
                     max_filled_segments = filled_segments
                     best_cell = (i,j)
@@ -73,34 +74,56 @@ def find_best_cell(board):
 
 def a_star_sudoku(board):
     """
-    Implementação do algoritmo A* para solucionar o Sudoku
+    Implementação do algoritmo A* para solucionar o Sudoku.
     """
-    # Fila de prioridade para gerenciar a expansão dos estados
+    # Fila de prioridade
     open_heap = []
+    
+    # Valor inicial da heurística
     initial_h = count_filled_segments(board)
-    # max_f = 9 + 9 + 9
+    
+    # Valores iniciais de g, h e f
     g = 0
     h = initial_h
     f = h + g
+    
+    # Adiciona o tabuleiro e o f iniciais ao heap
     heapq.heappush(open_heap, (f, board))
     num_expanded_states = 0
     
     while open_heap:
+        # Atualiza o estado de acordo com a fila de prioridade
         _, current_board = heapq.heappop(open_heap)
         num_expanded_states += 1
 
+        # Encontra a melhor célula de acordo com a heurística
         best_cell = find_best_cell(current_board)
+        
+        # Caso a função retorne None, significa que não há mais células vazias
         if not best_cell:
-            return current_board, num_expanded_states  # Solução encontrada
+            return current_board, num_expanded_states
 
+        # Atualiza a célula a ser preenchida
         row, col = best_cell
+        
+        # Testa os valores para a célula selecionada
         for num in range(1, 10):
             if is_valid(current_board, row, col, num):
+                
+                # Atualiza o tabuleiro
                 new_board = [row[:] for row in current_board]
                 new_board[row][col] = num
+                
+                # Atualiza o custo até então (g)
                 g += h
-                h = count_filled_segments(board)
+                
+                # Atualiza o valor da heurística
+                h = count_filled_segments(new_board)
+                
+                # Atualiza o valor de f (g+h)
                 f = g + h
+                
+                # Adiciona o estado ao heap, junto com seu valor de f
                 heapq.heappush(open_heap, (f, new_board))
 
     return None, num_expanded_states

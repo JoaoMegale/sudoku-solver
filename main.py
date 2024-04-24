@@ -8,9 +8,10 @@ import numpy as np
 
 def main():
     
-    input_strs = ["107006450", "025340008", "060001070", "053000029", "610009800", "000602007", "001093200", "008000000", "040078591"]
-    input_board = [list(map(int, list(row))) for row in input_strs]
-
+    input_strs = "107006450 025340008 060001070 053000029 610009800 000602007 001093200 008000000 040078591"
+    linhas = input_strs.split()
+    input_board = [list(map(int, linha)) for linha in linhas]
+    
     metodo = input("metodo: ")
 
     start_time = time.time()

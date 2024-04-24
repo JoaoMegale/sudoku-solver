@@ -1,13 +1,16 @@
 def is_valid(board, row, col, num):
-    # Verificar se o número não aparece na mesma linha
+    """
+    Verifica se um número pode ser inserido em determinada célula.
+    """
+    # Checa linha
     if num in board[row]:
         return False
     
-    # Verificar se o número não aparece na mesma coluna
+    # Checa coluna
     if num in [board[i][col] for i in range(9)]:
         return False
     
-    # Verificar se o número não aparece no mesmo bloco 3x3
+    # Checa bloco 3x3
     start_row, start_col = 3 * (row // 3), 3 * (col // 3)
     for i in range(start_row, start_row + 3):
         for j in range(start_col, start_col + 3):
@@ -17,6 +20,9 @@ def is_valid(board, row, col, num):
     return True
 
 def find_empty(board):
+    """
+    Procura pela próxima célula vazia no tabuleiro.
+    """
     for i in range(9):
         for j in range(9):
             if board[i][j] == 0:
