@@ -35,4 +35,3 @@ def ucs_sudoku(board):
                 heapq.heappush(queue, (cost + 1, new_board))
 
     return None, expanded_states
-

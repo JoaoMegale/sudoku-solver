@@ -14,15 +14,15 @@ def bfs_sudoku(board):
     while queue:
         # Atualiza o estado, pegando o próximo da fila
         current_board = queue.popleft()
-        
+                
         # Incrementa o número de estados expandidos
         num_expanded_states += 1
         
         # Encontra a próxima célula a ser preenchida
         empty_pos = find_empty(current_board)
         
+        # Verifica se há posições vazias
         if not empty_pos:
-            # Se não há posições vazias, temos um resultado
             return current_board, num_expanded_states
         else:
             row, col = empty_pos

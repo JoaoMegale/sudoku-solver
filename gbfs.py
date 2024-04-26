@@ -1,20 +1,8 @@
+from common import is_valid, count_choices
+
 import heapq
-from common import is_valid
 
-
-def count_choices(board, row, col):
-    """
-    Heurística utilizada. Conta quantos valores válidos existem para uma célula.
-    """
-    count = 0
-    for num in range(10):
-        if is_valid(board, row, col, num):
-            count += 1
-            
-    return count
-
-
-def get_total_choices(board):
+def heuristic(board):
     """
     Retorna a soma total das escolhas de todas as células do tabuleiro.
     """
@@ -27,7 +15,7 @@ def get_total_choices(board):
     return total
 
 
-def find_least_choices_cell(board):
+def find_best_cell(board):
     """
     Encontra a célula com o menor número de escolhas válidas, ou seja, que
     minimiza a heurística.
@@ -53,7 +41,7 @@ def gbfs_sudoku(board):
     open_heap = []
     
     # Valor inicial da heurística
-    initial_choices = get_total_choices(board)
+    initial_choices = heuristic(board)
     
     # Adiciona ao heap o tabuleiro e heurística inicial
     heapq.heappush(open_heap, (initial_choices, board))
@@ -66,7 +54,7 @@ def gbfs_sudoku(board):
         num_expanded_states += 1
 
         # Encontra a melhor célula de acordo com a heurística
-        least_choices_cell = find_least_choices_cell(current_board)
+        least_choices_cell = find_best_cell(current_board)
         
         # Caso a função retorne None, significa que não há mais células vazias
         if not least_choices_cell:
@@ -84,9 +72,10 @@ def gbfs_sudoku(board):
                 new_board[row][col] = num
                 
                 # Atualiza a heurística
-                new_choices = get_total_choices(new_board)
+                new_choices = heuristic(new_board)
                 
                 # Adiciona tabuleiro e heurística ao heap
                 heapq.heappush(open_heap, (new_choices, new_board))
 
     return None, num_expanded_states
+

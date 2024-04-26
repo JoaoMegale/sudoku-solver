@@ -28,3 +28,15 @@ def find_empty(board):
             if board[i][j] == 0:
                 return i, j
     return None
+
+
+def count_choices(board, row, col):
+    """
+    Conta quantos valores válidos existem para uma célula.
+    """
+    count = 0
+    for num in range(10):
+        if is_valid(board, row, col, num):
+            count += 1
+            
+    return count
